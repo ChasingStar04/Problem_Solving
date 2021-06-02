@@ -1,4 +1,5 @@
 /*
+풀이 1
 예를들어 F(234567)을 구한다고 하면
 제일 큰 자릿수에 들어가는 숫자의 개수 + 0~199999에 들어가는 숫자의 개수 + F(34567)로 구할 수 있습니다.
 이렇게하면 000012, 012345 같은 앞쪽에 들어가면 안되는 0까지 같이 세게 되는데
@@ -12,7 +13,7 @@ using namespace std;
 
 long long arr[10];
 
-void Func(string s)
+void Solve(string s)
 {
     if (s.length()==0)
         return;
@@ -29,8 +30,7 @@ void Func(string s)
             arr[i] += (long long)pow(10, s.length()-1);
     }
 
-    Func(s.substr(1, s.length()-1));
-    return;
+    Solve(s.substr(1, s.length()-1));
 }
 
 void DeleteZero(string s)
@@ -41,7 +41,6 @@ void DeleteZero(string s)
         arr[0] -= d*(s.length()-i);
         d *= (d==1 ? 9 : 10);
     }
-    return;
 }
 
 int main()
@@ -49,10 +48,68 @@ int main()
     string s;
 
     cin>>s;
-    Func(s);
+    Solve(s);
     DeleteZero(s);
     for (long long& i : arr)
         cout<<i<<' ';
     
     return 0;
 }
+
+/*
+풀이 2. 인터넷에서 많이 보이는 풀이법입니다.
+a~b까지 마지막 자리에 있는 숫자의 갯수를 구할 때
+a의 마지막 자리수를 0으로, b의 마지막 자리수를 9로 맞춰주면 편하게 구할 수 있습니다.
+이렇게 마지막 자리부터 한 자리씩 구합니다.
+*/
+/*
+#include <iostream>
+
+using namespace std;
+
+long long arr[10];
+
+void Calc(long long n, int ten)
+{
+    while (n>0)
+    {
+        arr[n%10] += ten;
+        n /= 10;
+    }
+}
+
+void Solve(long long s, long long e, int ten)
+{
+    while (s%10!=0 && s<=e)
+    {
+        Calc(s, ten);
+        s++;
+    }
+
+    if (s>e) return;
+
+    while (e%10!=9 && e>=s)
+    {
+        Calc(e, ten);
+        e--;
+    }
+
+    long long cnt = e/10 - s/10 + 1;
+    for (int i=0; i<10; i++)
+        arr[i] += cnt*ten;
+    
+    Solve(s/10, e/10, ten*10);
+}
+
+int main()
+{
+    long long n;
+
+    cin>>n;
+    Solve(1, n, 1);
+    for (int i=0; i<10; i++)
+        cout<<arr[i]<<' ';
+    
+    return 0;
+}
+*/
